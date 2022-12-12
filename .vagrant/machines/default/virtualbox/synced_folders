@@ -1,0 +1,1 @@
+{"virtualbox":{"/home/vagrant/application":{"guestpath":"/home/vagrant/application","hostpath":"C:/Users/Formation/Desktop/projet/VM_MYSQL_REDIS_APP/application","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"C:/Users/Formation/Desktop/projet/VM_MYSQL_REDIS_APP","disabled":false,"__vagrantfile":true}}}

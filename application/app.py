@@ -1,31 +1,31 @@
-from datetime import datetime
+from flask import Flask
 import redis
-import pymysql
+import mysql.connector
 
-# Connect to the Redis database
-r = redis.Redis(host='localhost', port=6379, db=0)
+app = Flask(__name__)
 
-# Connect to the MySQL database
-connection = pymysql.connect(host='localhost',
-                             user='app',
-                             password='',
-                             db='test')
+# Connect to Redis database
+redis_db = redis.Redis(host="localhost", port=6379)
 
-try:
-    with connection.cursor() as cursor:
-        # Insert a new record into the "visits" table
-        sql = "INSERT INTO visits (time) VALUES (%s)"
-        cursor.execute(sql, (datetime.now(),))
-        
-        # Increment the "visits" key in the Redis database
-        r.incr('visits')
-        
-        # Save the changes to the database
-        connection.commit()
-        
-finally:
-    connection.close()
+# Connect to MySQL database
+mysql_db = mysql.connector.connect(
+    host="localhost",
+    user="app",
+    password="",
+    database="test"
+)
 
-# Print the number of visits from the Redis database
-visits = r.get('visits')
-print(f'This page has been visited {visits} times!')
+@app.route("/")
+def index():
+    # Increment the number of visits in Redis
+    visits = redis_db.incr("visits")
+
+    # Retrieve the latest message from MySQL
+    cursor = mysql_db.cursor()
+    cursor.execute("SELECT message FROM messages ORDER BY id DESC LIMIT 1")
+    message = cursor.fetchone()
+
+    return f"You are visitor number {visits}. Latest message: {message}"
+
+if __name__ == "__main__":
+    app.run()
