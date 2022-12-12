@@ -28,8 +28,8 @@ def index():
     return f"""
         <html>
             <body>
-                <h1>You are visitor number {visits}.</h1>
-                <p>Latest messages:</p>
+                <h1>Tu est le visiteur n°  {visits}.</h1>
+                <p>Dernier messages :</p>
                 <ul>
                     {
                         "".join([f"<li>{message}</li>" for message in messages])
