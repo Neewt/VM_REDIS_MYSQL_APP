@@ -1,6 +1,7 @@
 from flask import Flask, request
 import redis
 import mysql.connector
+import html
 
 app = Flask(__name__)
 
@@ -28,11 +29,11 @@ def index():
     return f"""
         <html>
             <body>
-                <h1>Tu est le visiteur n°  {visits}.</h1>
+                <h1>Tu es le visiteur n°  {visits}.</h1>
                 <p>Dernier messages :</p>
                 <ul>
                     {
-                        "".join([f"<li>{message}</li>" for message in messages])
+                        "".join([f"<li>{html.escape(message[0])}</li>" for message in messages])
                     }
                 </ul>
                 <form method="post">
