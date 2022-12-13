@@ -2,6 +2,7 @@ from flask import Flask, request
 import redis
 import mysql.connector
 import html
+import requests
 
 app = Flask(__name__)
 
@@ -16,10 +17,14 @@ mysql_db = mysql.connector.connect(
     database="test"
 )
 
+
+    
 @app.route("/")
 def index():
     # Increment the number of visits in Redis
     visits = redis_db.incr("visits")
+    response = requests.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd")
+    bitcoin_price = response.json()['bitcoin']['usd']
 
     # Retrieve the latest messages from MySQL
     cursor = mysql_db.cursor()
@@ -29,13 +34,14 @@ def index():
     return f"""
         <html>
             <body>
-                <h1>Tu es le visiteur n°  {visits}.</h1>
+                <h1>Tu es le visiteur n° {visits}.</h1>
                 <p>Dernier messages :</p>
                 <ul>
                     {
                         "".join([f"<li>{html.escape(message[0])}</li>" for message in messages])
                     }
                 </ul>
+                <p>Prix actuel du Bitcoin : <strong>{bitcoin_price} USD</strong></p>
                 <form method="post">
                     <input type="text" name="message" />
                     <input type="submit" value="Send" />
