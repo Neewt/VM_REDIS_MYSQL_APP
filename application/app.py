@@ -23,9 +23,11 @@ mysql_db = mysql.connector.connect(
 def index():
     # Increment the number of visits in Redis
     visits = redis_db.incr("visits")
-    response = requests.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd")
-    bitcoin_price = response.json()['bitcoin']['usd']
-
+    try:
+        response = requests.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd")
+        bitcoin_price = response.json()['bitcoin']['usd']
+    except:
+        bitcoin_price = "ERREUR"
     # Retrieve the latest messages from MySQL
     cursor = mysql_db.cursor()
     cursor.execute("SELECT message FROM messages ORDER BY id DESC LIMIT 10")
